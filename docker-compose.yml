@@ -4,7 +4,8 @@ services:
   app:
     build: .
     ports:
-      - "5000:80"
+      - "5000:5000"
+      - "5001:5001"
     depends_on:
       - db
       - ejbca
@@ -14,6 +15,7 @@ services:
       - Ejbca__SuperAdminCertPath=/app/certs/SuperAdmin.p12
       - Ejbca__SuperAdminPassword=Cyblore123!
       - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000;https://+:5001
     volumes:
       - certificates:/app/certs
     networks:

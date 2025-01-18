@@ -6,6 +6,13 @@ using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add this after creating the builder to configure Kestrel
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(5000); // HTTP
+    serverOptions.ListenAnyIP(5001, configure => configure.UseHttps()); // HTTPS
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
@@ -71,10 +78,13 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    // Comment out or remove the following line if you want to allow HTTP
+    // app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Comment out or remove the following line if you want to allow HTTP
+// app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 app.UseCookiePolicy();
 app.UseRouting();
