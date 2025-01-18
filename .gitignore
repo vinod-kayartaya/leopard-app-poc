@@ -1,0 +1,37 @@
+# .NET
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Docker volumes
+sqldata/
+ejbca-data/
+postgres-data/
+certificates/
+
+# Environment files
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.sln.iml
+
+# Certificates
+*.p12
+*.pfx
+*.pem
+*.key
+*.crt
+
+# Logs
+logs/
+*.log
+
+# Others
+.DS_Store
+Thumbs.db

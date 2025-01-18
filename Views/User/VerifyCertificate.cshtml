@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Verify Certificate";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">Certificate Verification</h3>
+            </div>
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <form asp-action="VerifyCertificate" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Upload Your Certificate</label>
+                        <input type="file" name="certificate" class="form-control" accept=".p12,.pfx" required />
+                        <div class="form-text">Please upload your PKCS#12 certificate file (.p12 or .pfx)</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Verify Certificate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

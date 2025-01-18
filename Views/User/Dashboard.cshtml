@@ -1,0 +1,78 @@
+@model ApplicationUser
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="display-6">Welcome, @Model.FirstName!</h2>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-white">
+            <h4 class="mb-0">Your Profile</h4>
+        </div>
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item">
+                            <small class="text-muted">Name</small>
+                            <p class="mb-0 fw-bold">@Model.FirstName @Model.LastName</p>
+                        </div>
+                        <div class="list-group-item">
+                            <small class="text-muted">Email</small>
+                            <p class="mb-0 fw-bold">@Model.Email</p>
+                        </div>
+                        <div class="list-group-item">
+                            <small class="text-muted">Phone</small>
+                            <p class="mb-0 fw-bold">@(Model.PhoneNumber ?? "Not provided")</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Certificate Information</h5>
+                            <div class="mb-3">
+                                <small class="text-muted">Status</small>
+                                <div>
+                                    @if (Model.CertificateSerialNumber != null)
+                                    {
+                                        @if (Model.CertificateDownloaded)
+                                        {
+                                            <span class="badge bg-success rounded-pill">Downloaded</span>
+                                        }
+                                        else
+                                        {
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-warning rounded-pill">Ready for Download</span>
+                                                <a asp-action="DownloadCertificate" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-download"></i> Download
+                                                </a>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary rounded-pill">Not Issued</span>
+                                    }
+                                </div>
+                            </div>
+                            @if (Model.CertificateIssuedAt.HasValue)
+                            {
+                                <div class="mb-2">
+                                    <small class="text-muted">Issued On</small>
+                                    <p class="mb-0">@Model.CertificateIssuedAt.Value.ToLocalTime().ToString("g")</p>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Expires On</small>
+                                    <p class="mb-0">@Model.CertificateExpiresAt.Value.ToLocalTime().ToString("g")</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "5000:80"
+    depends_on:
+      - db
+      - ejbca
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=leopard_db;User Id=sa;Password=Cyblore123!;TrustServerCertificate=True
+      - Ejbca__BaseUrl=https://ejbca:8443
+      - Ejbca__SuperAdminCertPath=/app/certs/SuperAdmin.p12
+      - Ejbca__SuperAdminPassword=Cyblore123!
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - certificates:/app/certs
+    networks:
+      - leopard-network
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Cyblore123!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    networks:
+      - leopard-network
+
+  ejbca:
+    image: primekey/ejbca-ce:latest
+    ports:
+      - "8443:8443"
+    environment:
+      - DATABASE_JDBC_URL=jdbc:postgresql://ejbca-db:5432/ejbca
+      - DATABASE_USER=ejbca
+      - DATABASE_PASSWORD=ejbca
+    depends_on:
+      - ejbca-db
+    volumes:
+      - ejbca-data:/mnt/persistent
+    networks:
+      - leopard-network
+
+  ejbca-db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=ejbca
+      - POSTGRES_USER=ejbca
+      - POSTGRES_PASSWORD=ejbca
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - leopard-network
+
+volumes:
+  sqldata:
+  ejbca-data:
+  postgres-data:
+  certificates:
+
+networks:
+  leopard-network:
+    driver: bridge 

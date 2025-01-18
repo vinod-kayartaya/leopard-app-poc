@@ -1,0 +1,47 @@
+using Microsoft.EntityFrameworkCore;
+using LeopardApp.Data;
+using LeopardApp.Models;
+using System.Security.Cryptography;
+
+var connectionString = "Server=localhost,1433;Database=leopard_db;User Id=sa;Password=Cyblore123!;TrustServerCertificate=True";
+
+var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+optionsBuilder.UseSqlServer(connectionString);
+
+using (var context = new ApplicationDbContext(optionsBuilder.Options))
+{
+    // Delete existing user if exists
+    var existingUser = await context.Users.FirstOrDefaultAsync(u => u.Email == "vinod@vinod.co");
+    if (existingUser != null)
+    {
+        context.Users.Remove(existingUser);
+        await context.SaveChangesAsync();
+    }
+
+    // Create new user
+    var user = new ApplicationUser
+    {
+        Id = Guid.NewGuid(),
+        FirstName = "Vinod",
+        LastName = "Kumar",
+        Email = "vinod@vinod.co",
+        IsAdmin = true,
+        IsActive = true,
+        EmployeeId = Guid.NewGuid().ToString(),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IssueCertificate = true
+    };
+
+    // Hash password using SHA256
+    using (var sha256 = SHA256.Create())
+    {
+        var hashedBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes("Cyblore123!"));
+        user.PasswordHash = Convert.ToBase64String(hashedBytes);
+    }
+
+    context.Users.Add(user);
+    await context.SaveChangesAsync();
+
+    Console.WriteLine("User created successfully!");
+}
