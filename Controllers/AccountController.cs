@@ -41,6 +41,9 @@ public class AccountController : Controller
             Response.Cookies.Delete(cookie);
         }
 
+        // Clear any existing certificate validation status
+        HttpContext.Session.Remove("CertificateValidated");
+
         _logger.LogInformation("Login attempt for email: {Email}", model.Email);
 
         if (!ModelState.IsValid)
@@ -93,6 +96,9 @@ public class AccountController : Controller
         if (!user.CertificateDownloaded && user.CertificateSerialNumber != null)
             return RedirectToAction("DownloadCertificate", "User");
 
+        if (user.CertificateDownloaded)
+            return RedirectToAction("Dashboard", "User");
+
         return RedirectToAction("VerifyCertificate", "User");
     }
 
@@ -115,6 +121,9 @@ public class AccountController : Controller
         {
             Response.Cookies.Append(cookie, "", cookieOptions);
         }
+
+        // Clear certificate validation status
+        HttpContext.Session.Remove("CertificateValidated");
 
         // Clear session
         HttpContext.Session.Clear();

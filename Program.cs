@@ -9,13 +9,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add this after creating the builder to configure Kestrel
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.ListenAnyIP(5000); // HTTP
-    serverOptions.ListenAnyIP(5001, configure => configure.UseHttps()); // HTTPS
+    serverOptions.ListenAnyIP(5002); // HTTP
+    serverOptions.ListenAnyIP(5003, configure => configure.UseHttps()); // HTTPS
 });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 // Configure cookie policy
 builder.Services.Configure<CookiePolicyOptions>(options =>
