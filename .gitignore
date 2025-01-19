@@ -22,7 +22,7 @@ certificates/
 *.sln.iml
 
 # Certificates
-*.p12
+# *.p12
 *.pfx
 *.pem
 *.key
